@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 import scipy 
 import scipy.io
 import os.path
-import lmdb						# May require 'pip install lmdb' if lmdb not found 
-
+import lmdb 
+import tables
 # -------- Import Caffe ---------------
-caffe_root = '/home/sukrit/Desktop/caffe-master/' 
+caffe_root = '' 
 import sys 
 sys.path.insert(0, caffe_root + 'python')
 import caffe
@@ -24,7 +24,7 @@ import caffe
 # Please set the following values and paths as per your needs 
 N = 162770									# Number of data instances  
 M = 40										# Number of possible labels for each data instance 
-output_lmdb_path = '/home/sukrit/Desktop/caffe_project/lmdbs/label_lmdb'   	# Path of the output label LMDB
+output_lmdb_path = ''   	                                # Path of the output label LMDB
 labels_mat_file = 'labels.mat'							# Mat file for labels N x M 
 # +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -38,7 +38,7 @@ env = lmdb.open(output_lmdb_path, map_size=map_size)
 # ---------------------------------
 # Read the mat file and assign to X 
 mat_contents = scipy.io.loadmat(labels_mat_file)
-X[:,:,0,0] = mat_contents['labels'] 	
+X[:,:,0,0] = mat_contents.getNode('/' + 'labels')[:]	# read -v7.3 .mat files
 # The above expects that the MAT file contains the variable as labels	
 # To instead check the variable names in the mat file, and use them in a more judicious way, do 
 # array_names = scipy.io.whosmat(labels_mat_file) 	
